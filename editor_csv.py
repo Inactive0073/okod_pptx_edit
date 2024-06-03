@@ -50,11 +50,12 @@ def filter_employees(employee_info:list[str]) -> list[str]:
         list[tuple[str, str, str]]: Список кортежей с данными сотрудников.
         '''
     date_compare = input('\nВведите дату отсечки в формате: "dd.mm".\nЕсли нужен текущий день, нажмите "Enter".\n')
+    date_finished = input('\nВведите дату итогового формирования в формате: "dd.mm".\nЕсли нужен текущий день, нажмите "Enter".\n')
     res_lst: list[str] = []
     for row in employee_info:
         _, fio, position, date = row
         emp = Employee(fio, position, date)
-        if is_birthday_today(emp.date, date_compare):
+        if is_birthday_today(emp.date, date_compare, date_finished):
             res_lst.append((emp.fio,emp.position,'.'.join(emp.date.split('.')[:-1]))) # В результирующий список передаем данные 
     return res_lst
 
@@ -63,7 +64,7 @@ def edit_date(day,month) -> str:
     return f'{str(day).zfill(2)}.{str(month).zfill(2)}'
 
 
-def is_birthday_today(date_birthday:str, date_compare=None):
+def is_birthday_today(date_birthday:str, date_compare=None, date_finish=None):
     '''Проверка на наличие дня рождения в эту дату или с момента даты отсечки, 
     указанной вручную в функции filter_employees
     
@@ -77,7 +78,10 @@ def is_birthday_today(date_birthday:str, date_compare=None):
     '''
     global count
     d1 = Date(date_compare)
-    cur_date = edit_date(d1.cur_day,d1.cur_month)
+    if date_finish:
+        cur_date = date_finish
+    else:
+        cur_date = edit_date(d1.cur_day,d1.cur_month)
     date_birthday = sub(r'(\d{2}\.\d+)\.\d{4}', r'\1', date_birthday) # дата рождения в формате dd.mm
     
     if not date_compare or date_birthday in (date_compare, cur_date):

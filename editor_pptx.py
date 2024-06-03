@@ -2,13 +2,13 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.enum.text import PP_ALIGN
 import editor_csv
-from os import getcwd
+from os import system
 import datetime as dt
 from collections import OrderedDict
 
 # отфильтрованный словарь по датам
 data_dict = OrderedDict(sorted(editor_csv.filtered_list.items())) 
-img_path = 'ackground.jpg'
+img_path = 'background.jpg'
 
 print(data_dict)
 # Создание нового презентационного файла
@@ -43,6 +43,8 @@ def create_slide(date_key=None, lst=None):
     # Добавление даты
     p = tf.paragraphs[0]
     p.text = date
+    p.font.size = Pt(12)
+    
     
     
     for el in lst:
@@ -68,5 +70,8 @@ def start():
     for key, val in data_dict.items():
         create_slide(key,val)
 
+start()
 # Сохранение презентации
-new_prs.save(f"{dt.datetime.now().strftime('%d.%m')}.pptx")
+lst_keys = list(data_dict.keys())
+new_prs.save(f"{lst_keys[0]}-{lst_keys[-1]}.pptx")
+system('pause')
